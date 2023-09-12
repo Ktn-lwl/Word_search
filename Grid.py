@@ -1,4 +1,8 @@
-#r and c refer to rows and columns respectively throughout code
+"""
+r and c refer to rows and columns respectively throughout code. Matrix coordinates
+start from (1, 1) and go up to whatever you want (depending on computational
+limitations of course).
+"""
 
 class Grid:
     def __init__(self, dimensions): 
@@ -25,8 +29,7 @@ class Grid:
 
     def mass_update(self, data):
         for i in data:
-            self.update(i[0],i[1])
-            
+            self.update(i[0],i[1])   
         """
         Update several coordinates in the matrix at once. Takes a list of the 
         form: [((r1,c1), data1), ..., ((rN,cN), dataN)] as the 'data' 
@@ -36,7 +39,7 @@ class Grid:
     def wipe(self):
         self.body = [list("0"*self.dimensions) for i in range(self.dimensions)]
         """
-        Initializes the matrix.
+        Initializes the matrix (keeps dimensions, but fills it with 0s).
         """
 
     def return_row(self, n, reversed=False):
@@ -155,6 +158,7 @@ class Grid:
 Disregard these last few lines, I just use them to dynamically testing my methods as I
 write em (I'm kinda lazy and don't wanna write actual test cases).
 """
+
 a = Grid(6)
 updata = [((1,2), "A"), ((2,6), "B"), ((3,4), "E"), ((3,1), "M"),
           ((5,5), "S"), ((6,3), "W"),((1,1), "X")]
