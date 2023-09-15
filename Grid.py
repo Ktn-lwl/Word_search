@@ -105,53 +105,33 @@ class Grid:
         but cut me some slack okay? Idk what to call them and those seem fitting.) 
         """
 
-    def vector(self, coords, direction):
+    def vector(self, coords, di):
         dim = self.dimensions
         (r,c) = coords
-        directions = {1:Grid.return_skewdiagonal,
-                      2:Grid.return_row,
-                      3:Grid.return_diagonal,
-                      4:Grid.return_column}
+        n = (int(di%4==1)*(dim+1-(c+r))+
+             int(di%4==3)*(c-r))
+        directions = {1:[Grid.return_skewdiagonal, (int(n>=0)*(c-1))+(int(n<0)*abs(r-dim))],
+                      2:[Grid.return_row,(c-1)],
+                      3:[Grid.return_diagonal, (int(n>=0)*(r-1))+(int(n<0)*(c-1))],
+                      0:[Grid.return_column, (r-1)]}
         
-        if direction <= 4:    
-            if direction == 1:
-                n = dim+1-(c+r)
-                return directions[1](self, n)[((int(n>=0)*(c-1))+(int(n<0)*abs(r-dim))):]
+        x = (n*int(di%2==1)+
+             r*int(di%4==2)+
+             c*int(di%4==0))
 
-            if direction == 2:
-                return directions[2](self, r)[(c-1):]
-        
-            if direction == 3:
-                n = c-r
-                return directions[3](self, n)[((int(n>=0)*(r-1))+(int(n<0)*(c-1))):]
-        
-            if direction == 4:
-                return directions[4](self, c)[(r-1):]
-        
-        else:
-            if direction == 5:
-                n = dim+1-(c+r)
-                return directions[1](self, n)[:((int(n>=0)*(c-1))+(int(n<0)*abs(r-dim))+1)][::-1]
-        
-            if direction == 6:
-                return directions[2](self, r)[:c][::-1]
-        
-            if direction == 7:
-                n = c-r
-                return directions[3](self, n)[:((int(n>=0)*(r-1))+(int(n<0)*(c-1))+1)][::-1]
-        
-            if direction == 8:
-                return directions[4](self, c)[:r][::-1]
+        y1 = int(di<5)*directions[di%4][1]
+        y2 = int(di>4)*directions[di%4][1]+int(di>4)+int(di<5)*len(directions[di%4][0](self,x))
+
+        z = int(di<5)-int(di>=5)
+
+        return directions[di%4][0](self, x)[y1:y2][::z]
     
         """
         Return the item at the given coordinates plus all the consecutive items in a 
-        specified direction in the matrix. The direction is to be specified using an
+        specified direction, 'di', in the matrix. The direction is to be specified using an
         integer between 1 and 8 inclusive, with 8 indicating North, 1 indicating 
         Northeast, and so on (kinda like you would arrange the numbers on a clock 
         face, except with 8 numbers, not 12).
-
-        (This method is really clunky, but I think I've found a way I can shorten 
-        and optimise it; gimme a day or two.) 
         """
 
 """
@@ -164,4 +144,5 @@ updata = [((1,2), "A"), ((2,6), "B"), ((3,4), "E"), ((3,1), "M"),
           ((5,5), "S"), ((6,3), "W"),((1,1), "X")]
 Grid.mass_update(a, updata)#recently discovered implicit calls, and I think they're pretty neat :)
 a.showgrid()
-print(a.vector((3,5), 6))
+for i in range(1,9):
+    print(a.vector((3,5), i))
